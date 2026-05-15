@@ -6,13 +6,23 @@ import { User } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/features/auth/schemas/loginSchema"
-import { Link } from "react-router"
+import { useAuth } from "@/features/auth/hooks/useAuth"
+import { Link, useNavigate } from "react-router"
+import toast from "react-hot-toast"
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(loginSchema) })
+    const { isLoading, signIn } = useAuth()
+    const navigate = useNavigate()
 
     const onSubmit = async (data: { email: string; password: string }) => {
-        console.log(data);
+        try {
+            await signIn(data.email, data.password)
+            navigate("/")
+            toast.success("Logged in successfully!")
+        } catch (error: any) {
+            toast.error(error.message)
+        }
     }
 
     return (
@@ -37,7 +47,7 @@ const Login = () => {
                 </div>
             </div>
             <div className="flex flex-col gap-4">
-                <Button type="submit" variant="action" className="w-full font-medium">
+                <Button type="submit" variant="action" disabled={isLoading} className="w-full font-medium">
                     Sign In
                 </Button>
                 <p className="text-sm text-zinc-500 text-center">

@@ -6,14 +6,23 @@ import { User } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { registerSchema } from '@/features/auth/schemas/registerSchema'
-import { Link } from 'react-router'
+import { useAuth } from '@/features/auth/hooks/useAuth'
+import { Link, useNavigate } from 'react-router'
+import toast from 'react-hot-toast'
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(registerSchema) })
-
+    const { isLoading, signUp } = useAuth()
+    const navigate = useNavigate()
 
     const onSubmit = async (data: { email: string; password: string; confirmPassword: string }) => {
-        console.log(data);
+        try {
+            await signUp(data.email, data.password)
+            navigate("/")
+            toast.success("Account created successfully!")
+        } catch (error: any) {
+            toast.error(error.message)
+        }
     }
 
     return (
@@ -34,7 +43,7 @@ const Register = () => {
                 </FormField>
             </div>
             <div className="flex flex-col gap-4">
-                <Button type="submit" variant="action" className="w-full font-medium">
+                <Button type="submit" variant="action" disabled={isLoading} className="w-full font-medium">
                     Sign Up
                 </Button>
                 <p className="text-sm text-zinc-500 text-center">
