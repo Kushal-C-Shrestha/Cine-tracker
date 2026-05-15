@@ -1,8 +1,11 @@
 import MovieCard from '@/features/movies/components/MovieCard'
 import { useGetGenresQuery, useGetMoviesQuery } from '@/features/movies/services/tmdbMoviesApi'
 import Loader from '@/components/atoms/Loader'
+import { setSelectedMovieId } from '@/features/movies/store/movieSlice'
+import { useAppDispatch } from '@/app/store/hooks'
 
 const MovieGrid = () => {
+  const dispatch = useAppDispatch();
   const { data: genres = {} } = useGetGenresQuery()
   const { data: movies = [], isLoading } = useGetMoviesQuery()
 
@@ -36,6 +39,7 @@ const MovieGrid = () => {
               genre: movie.genre_ids.map((id: number) => genres[id] || 'Unknown'),
               posterUrl: movie.poster_path,
             }}
+            onClick={() => dispatch(setSelectedMovieId(movie.id))}
           />
         ))}
       </div>

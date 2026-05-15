@@ -5,13 +5,13 @@ type MovieCardProps = {
         rating: number
         genre: string[]
         posterUrl?: string
-        isWatchlisted?: boolean
-    }
+    },
+    onClick?: () => void
 }
 
-const MovieCard = ({ movie }: MovieCardProps) => {
+const MovieCard = ({ movie, onClick }: MovieCardProps) => {
     return (
-        <div className="flex flex-col w-full cursor-pointer">
+        <div className="flex flex-col w-full cursor-pointer" onClick={onClick}>
             <div className="rounded-lg overflow-hidden">
                 <img
                     src={`https://image.tmdb.org/t/p/w500${movie?.posterUrl}`}
