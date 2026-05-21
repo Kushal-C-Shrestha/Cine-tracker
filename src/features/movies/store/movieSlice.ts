@@ -2,24 +2,24 @@ import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
 interface MoviesState {
-    selectedMovieId: number | null
-    watchlistSelectedMovieId: number | null
+    selectedMovie: any | null
+    watchlistSelectedMovie: any | null
 }
 
 const initialState: MoviesState = {
-    selectedMovieId: null,
-    watchlistSelectedMovieId: null,
+    selectedMovie: null,
+    watchlistSelectedMovie: null,
 }
 
 const movieSlice = createSlice({
     name: "movie",
     initialState,
     reducers: {
-        setSelectedMovieId: (state, action: PayloadAction<number | null>) => {
-            state.selectedMovieId = action.payload
+        setSelectedMovie: (state, action: PayloadAction<any | null>) => {
+            state.selectedMovie = action.payload
         },
     },
 })
 
-export const { setSelectedMovieId } = movieSlice.actions
+export const { setSelectedMovie } = movieSlice.actions
 export default movieSlice.reducer
