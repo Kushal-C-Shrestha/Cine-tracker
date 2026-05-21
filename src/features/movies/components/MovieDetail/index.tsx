@@ -1,13 +1,15 @@
 import { X } from 'lucide-react'
+import Button from '@/components/atoms/Button'
+import { setSelectedMovie } from '@/features/movies/store/movieSlice'
 import { useGetMovieByIdQuery } from '@/features/movies/services/tmdbMoviesApi'
 
+
 type MovieDetailProps = {
-  movie: { id: number }
-  setSelectedMovie: () => void
+  movie: any
 }
 
 const MovieDetail = ({ movie, setSelectedMovie }: MovieDetailProps) => {
-  const { data: movieDetail, isLoading } = useGetMovieByIdQuery(movie.id)
+const { data: movieDetail, isLoading } = useGetMovieByIdQuery(movie.id)
 
   if (isLoading) {
     return (
@@ -26,10 +28,10 @@ const MovieDetail = ({ movie, setSelectedMovie }: MovieDetailProps) => {
           className="w-full aspect-video object-cover"
         />
         <button
-          onClick={() => setSelectedMovie()}
-          className="absolute top-4 right-4 text-white rounded-full bg-black/30 backdrop-blur-md p-1 border border-white/10 hover:bg-black/60 transition-colors"
+          onClick={() => dispatch(setSelectedMovie(null))}
+          className="absolute top-4 right-4 text-white rounded-full bg-black/30 p-2 hover:bg-black/50 transition-colors"
         >
-          <X size={18} />
+          <X className="w-5 h-5" />
         </button>
       </div>
 
@@ -53,6 +55,29 @@ const MovieDetail = ({ movie, setSelectedMovie }: MovieDetailProps) => {
 
         <span className="text-sm text-gray-400 block mb-4">Released: {movieDetail.release_date}</span>
         <p className="text-gray-300 text-sm leading-relaxed">{movieDetail?.overview}</p>
+      </div>
+
+      <div className="flex gap-4 px-6 py-4 bg-black/30 backdrop-blur-md">
+        <Button variant="outline" className="flex-1" onClick={() => { movieDetail.homepage && window.open(movieDetail.homepage, '_blank') }}>
+          Watch Trailer
+        </Button>
+        {isInWatchlist(movieDetail.id) ? (
+          <Button
+            variant="secondary"
+            className="flex-1"
+            onClick={async () => await toggleMovie(movieDetail.id)}
+          >
+            Remove
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            className="flex-1"
+            onClick={async () => await toggleMovie(movieDetail.id)}
+          >
+            Add to Watchlist
+          </Button>
+        )}
       </div>
 
     </div>
