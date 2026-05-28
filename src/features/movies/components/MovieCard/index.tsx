@@ -1,3 +1,6 @@
+import { useAppDispatch } from "@/app/store/hooks"
+import { setSelectedMovie } from "@/features/movies/store/movieSlice"
+
 type MovieCardProps = {
     movie?: {
         id: number
@@ -9,9 +12,14 @@ type MovieCardProps = {
     onClick?: () => void
 }
 
-const MovieCard = ({ movie, onClick }: MovieCardProps) => {
+const MovieCard = ({ movie }: MovieCardProps) => {
+    const dispatch = useAppDispatch();
+
+    const handleClick = () => {
+        dispatch(setSelectedMovie(movie));
+    }
     return (
-        <div className="flex flex-col w-full cursor-pointer" onClick={onClick}>
+        <div className="flex flex-col w-full cursor-pointer" onClick={handleClick}>
             <div className="rounded-lg overflow-hidden">
                 <img
                     src={`https://image.tmdb.org/t/p/w500${movie?.posterUrl}`}

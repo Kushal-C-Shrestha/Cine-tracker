@@ -1,23 +1,32 @@
 import { X } from 'lucide-react'
 import Button from '@/components/atoms/Button'
 import { setSelectedMovie } from '@/features/movies/store/movieSlice'
-import { useGetMovieByIdQuery } from '@/features/movies/services/tmdbMoviesApi'
-
+import { useAppDispatch } from '@/app/store/hooks'
+import useWatchlist from '../../hooks/useWatchlist'
+import { useSuspenseMovie } from '@/features/movies/hooks/useSuspenseMovie'
+import { use } from 'react'
 
 type MovieDetailProps = {
   movie: any
 }
 
-const MovieDetail = ({ movie, setSelectedMovie }: MovieDetailProps) => {
-const { data: movieDetail, isLoading } = useGetMovieByIdQuery(movie.id)
+type MovieDetailData = {
+  id: number
+  title: string
+  overview: string
+  release_date: string
+  vote_average: number
+  genres: { id: number; name: string }[]
+  backdrop_path: string | null
+  homepage: string | null
+}
 
-  if (isLoading) {
-    return (
-      <div className="w-72 md:w-80 lg:w-96 xl:w-100 bg-black flex items-center justify-center min-h-100">
-        <p className="text-gray-500 animate-pulse text-sm font-medium tracking-wide">Loading...</p>
-      </div>
-    )
-  }
+const MovieDetail = ({ movie }: MovieDetailProps) => {
+  const dispatch = useAppDispatch()
+  const { toggleMovie, isInWatchlist } = useWatchlist()
+  const { fetchMovieById } = useSuspenseMovie()
+
+  const movieDetail: MovieDetailData = use(fetchMovieById(movie.id))
 
   return (
     <div className="w-72 md:w-80 lg:w-96 xl:w-100 bg-black flex flex-col shrink-0 overflow-hidden">
